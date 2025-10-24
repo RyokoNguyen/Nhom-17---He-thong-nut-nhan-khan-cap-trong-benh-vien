@@ -1,0 +1,1485 @@
+[
+    {
+        "id": "0733bf3ed032d3ba",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b6da54ec33e2338b",
+        "type": "tab",
+        "label": "NHÓM 17 (CoAP)",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ui_tab_home",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 1
+    },
+    {
+        "id": "22087c23dcd10634",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#0eb8c0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "3ad03d20df8dc74e",
+        "type": "coap-server",
+        "name": "room",
+        "port": "5683",
+        "ipv6": false
+    },
+    {
+        "id": "c1ae6b5e9f3a1599",
+        "type": "ui_group",
+        "name": "Phòng 2",
+        "tab": "ui_tab_home",
+        "order": 2,
+        "disp": true,
+        "width": 10,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f719ee4f0534ee66",
+        "type": "ui_group",
+        "name": "Phòng 3",
+        "tab": "ui_tab_home",
+        "order": 3,
+        "disp": true,
+        "width": 10,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "776f2240a27b0c8d",
+        "type": "ui_group",
+        "name": "Phòng 4",
+        "tab": "ui_tab_home",
+        "order": 4,
+        "disp": true,
+        "width": 10,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ui_group_room1",
+        "type": "ui_group",
+        "name": "Phòng 1",
+        "tab": "ui_tab_home",
+        "order": 1,
+        "width": 10
+    },
+    {
+        "id": "d48475a14a381609",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Xử lý 1",
+        "func": "// Cập nhật giao diện + CSV + bật/tắt nút DUYỆT\nconst data = msg.payload;\nconst room = data.id || 'room1';\n\nlet state = '';\nlet enableBtn = false;\nlet text, color, app = false;\n\nlet allow = flow.get('allow_get') || {};\nlet roomStates = flow.get('room_state') || {};\n\n\nif (data.status === 'waiting') {\n    text = 'Có yêu cầu từ phòng bệnh số 1';\n    state = 'waiting';\n    app = true;\n    color = 2;\n} else if (data.status === 'approved') {\n    text = 'Đang xử lý...';\n    state = 'approved';\n    app = true;\n    color = 1;\n} else if (data.status === 'done') {\n    text = 'Xử lý xong';\n    state = 'done';\n    app = true;\n    color = 0;\n} else {\n    app = false;\n}\n\nallow[room] = app;\nroomStates[room] = state;\nflow.set('allow_get', allow);\nenableBtn = (state === 'waiting');\nflow.set('room_state', roomStates);\n\n\nreturn [{ payload: color }, { lbl: text }, { enable: enableBtn }, { payload: data }];",
+        "outputs": 4,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 300,
+        "wires": [
+            [
+                "e3e8a2c01df1067a"
+            ],
+            [
+                "0d7ccbebe22706d6"
+            ],
+            [
+                "4f46f5a33aa5b00a"
+            ],
+            [
+                "6d79271fda761d02"
+            ]
+        ]
+    },
+    {
+        "id": "e3e8a2c01df1067a",
+        "type": "ui_led",
+        "z": "b6da54ec33e2338b",
+        "order": 1,
+        "group": "ui_group_room1",
+        "width": 2,
+        "height": 1,
+        "label": "",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ffffff",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#ffff00",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#ff0000",
+                "value": "2",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "LED 1",
+        "x": 1250,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "0d7ccbebe22706d6",
+        "type": "ui_text",
+        "z": "b6da54ec33e2338b",
+        "group": "ui_group_room1",
+        "order": 2,
+        "width": 8,
+        "height": 1,
+        "name": "Hiển thị",
+        "label": "",
+        "format": "{{msg.lbl}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1260,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "4f46f5a33aa5b00a",
+        "type": "ui_template",
+        "z": "b6da54ec33e2338b",
+        "group": "ui_group_room1",
+        "name": "Nút \"Duyệt\"",
+        "order": 3,
+        "width": 10,
+        "height": 1,
+        "format": "<div style=\"text-align:center\">\n  <md-button class=\"md-raised md-primary\" ng-disabled=\"!enabled\" ng-click=\"send({payload:'approve'})\">\n    CHẤP NHẬN\n  </md-button>\n</div>\n<script>\n(function(scope){\n  scope.enabled = false;\n  scope.$watch('msg', function(msg){\n    if(!msg) return;\n    if(msg.enable === true){ scope.enabled = true; }\n    if(msg.enable === false){ scope.enabled = false; }\n  });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1270,
+        "y": 320,
+        "wires": [
+            [
+                "c0b7d13edba82888"
+            ]
+        ]
+    },
+    {
+        "id": "c0b7d13edba82888",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Chặn nếu chưa waiting",
+        "func": "// Chỉ cho DUYỆT khi phòng đang ở trạng thái waiting\nconst room = 'room1';\nconst rs = flow.get('room_state') || {};\n\nconst ok = (rs[room] === 'waiting');\n\n\nif (ok) {\n  msg.payload = { id: room, status: 'approved' };\n  return [msg, null];\n} else {\n  return [null, { payload: 'Chưa có yêu cầu hoặc đã duyệt!', position: 'top right', timeout: 3 }];\n}\n",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1310,
+        "y": 400,
+        "wires": [
+            [
+                "82d8c06745d079ec",
+                "d48475a14a381609"
+            ],
+            [
+                "66bf4835a313c139"
+            ]
+        ]
+    },
+    {
+        "id": "82d8c06745d079ec",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Tắt nút sau khi \"Duyệt\"",
+        "func": "return { enable: false };",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1610,
+        "y": 380,
+        "wires": [
+            [
+                "4f46f5a33aa5b00a"
+            ]
+        ]
+    },
+    {
+        "id": "66bf4835a313c139",
+        "type": "debug",
+        "z": "b6da54ec33e2338b",
+        "name": "Báo lỗi",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1550,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "aeb5c9c9be23e5e2",
+        "type": "coap response",
+        "z": "b6da54ec33e2338b",
+        "name": "CoAP RES",
+        "statusCode": "",
+        "contentFormat": "application/json",
+        "x": 1270,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "42f9b6dcddca8a1b",
+        "type": "coap in",
+        "z": "b6da54ec33e2338b",
+        "method": "POST",
+        "name": "CoAP POST /room1",
+        "server": "3ad03d20df8dc74e",
+        "url": "/room1",
+        "x": 130,
+        "y": 300,
+        "wires": [
+            [
+                "28e92c32bbf22f79"
+            ]
+        ]
+    },
+    {
+        "id": "28e92c32bbf22f79",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Chuẩn hoá payload → string",
+        "func": "let p = msg.payload;\nif (Buffer.isBuffer(p)) p = p.toString();\nif (typeof p !== 'string') p = (p==null? '' : JSON.stringify(p));\np = p.trim();\nmsg.payload = p;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 300,
+        "wires": [
+            [
+                "dad3fa63bc3297c1"
+            ]
+        ]
+    },
+    {
+        "id": "dad3fa63bc3297c1",
+        "type": "switch",
+        "z": "b6da54ec33e2338b",
+        "name": "Có dữ liệu?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 300,
+        "wires": [
+            [
+                "bb38a8595d5e9b9d"
+            ]
+        ]
+    },
+    {
+        "id": "bb38a8595d5e9b9d",
+        "type": "json",
+        "z": "b6da54ec33e2338b",
+        "name": "JSON parse",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 300,
+        "wires": [
+            [
+                "ac30d9c835b6dad3",
+                "d48475a14a381609"
+            ]
+        ]
+    },
+    {
+        "id": "ac30d9c835b6dad3",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Response",
+        "func": "const now = new Date(Date.now() + 7 * 3600 * 1000).toISOString().replace('T', ' ').slice(0, 19);\nmsg.payload = { ack: true, time: now };\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 240,
+        "wires": [
+            [
+                "aeb5c9c9be23e5e2"
+            ]
+        ]
+    },
+    {
+        "id": "d8fa15628eaac441",
+        "type": "coap in",
+        "z": "b6da54ec33e2338b",
+        "method": "GET",
+        "name": "CoAP GET /room1/status",
+        "server": "3ad03d20df8dc74e",
+        "url": "/room1/status",
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "0e4185a7b5a6ac3c"
+            ]
+        ]
+    },
+    {
+        "id": "0e4185a7b5a6ac3c",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Gate: chỉ cho GET sau khi Duyệt",
+        "func": "const room = 'room1';\nconst rs = flow.get('room_state') || {};\nconst allow = flow.get('allow_get') || {};\n\nlet state = rs[room] || 'other';\n\nif (!allow[room]) {\n    msg.payload = { ack:false, error:'GET not allowed for room1'};\n    return msg;\n} else {\n    if (state === 'waiting') {\n        msg.payload = { id: room, status: 'waiting' };\n    } else if (state === 'approved') {\n        msg.payload = { id: room, status: 'approved' };\n    } else if (state === 'done') {\n        msg.payload = { id: room, status: 'done' };\n    }else{\n        msg.payload = { ack: false, error: 'GET not allowed for room1' };\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 200,
+        "wires": [
+            [
+                "aeb5c9c9be23e5e2"
+            ]
+        ]
+    },
+    {
+        "id": "6d79271fda761d02",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Lưu file",
+        "func": "\n// === Function: Build 4-room workbook (GMT+7) for @juraj336/node-red-buffer-xlsx ===\n// - Hỗ trợ 4 phòng: room1..room4\n// - Lưu state theo phòng: waiting → approved → done\n// - Khi 'done' => thêm 1 dòng vào sheet của phòng đó, xuất 1 workbook có 4 sheet\n// - Nên nối sang node `buffer-xlsx writeFile`\n//\n// Danh sách phòng\nconst ROOM_IDS = [\"room1\", \"room2\", \"room3\", \"room4\"];\n\n// === Helpers ===\nfunction nowVN() {\n    const local = new Date().toLocaleString(\"en-GB\", {\n        timeZone: \"Asia/Bangkok\",\n        hour12: false\n    });\n    const [date, time] = local.split(\", \");\n    const [dd, mm, yyyy] = date.split(\"/\");\n    return `${yyyy}-${mm}-${dd} ${time}`; // YYYY-MM-DD HH:MM:SS\n}\n\nfunction headerRow() {\n    return {\n        row_styling: {\n            pattern_type: \"solid\",\n            fgColor: \"ffffffff\",\n            bgColor: \"FFe4e2de\",\n            hAlign: \"center\",\n            vAlign: \"center\"\n        },\n        cells: [\n            { cell_value: \"Nhận yêu cầu\", cell_styling: { fBold: true } },\n            { cell_value: \"Phòng\", cell_styling: { fBold: true } },\n            { cell_value: \"Chấp nhận\", cell_styling: { fBold: true } },\n            { cell_value: \"Xử lý xong\", cell_styling: { fBold: true } }\n        ]\n    };\n}\n\nfunction sheetWrapper(sheet_name, dataRows) {\n    return {\n        sheet_name,\n        sheet_styling: {\n            pattern_type: \"solid\",\n            fgColor: \"ffffffff\",\n            bgColor: \"FFFEFEFE\",\n            hAlign: \"left\",\n            vAlign: \"center\",\n            borders: { all: { style: \"thin\", bColor: \"FF9b9bd9\" } }\n        },\n        header_styling: {\n            pattern_type: \"solid\",\n            fgColor: \"ffffffff\",\n            bgColor: \"FFe4e2de\",\n            hAlign: \"center\",\n            vAlign: \"center\",\n            fBold: true\n        },\n        columns_styling: [\n            { index: 0, column_styling: { hAlign: \"center\" } },\n            { index: 1, column_styling: { hAlign: \"left\", fBold: true } },\n            { index: 2, column_styling: { hAlign: \"center\" } },\n            { index: 3, column_styling: { hAlign: \"center\" } }\n        ],\n        rows: [headerRow(), ...dataRows]\n    };\n}\n\n// === Input ===\nconst d = msg.payload || {};\nconst room = (d.id || \"\").toString().toLowerCase();\nconst status = (d.status || \"\").toString().toLowerCase();\nconst now = nowVN();\n\n// Chỉ xử lý 4 phòng\nif (!ROOM_IDS.includes(room)) {\n    // Bỏ qua nếu phòng không nằm trong 4 phòng đã định\n    return null;\n}\n\n// === State theo phòng (waiting/approved → lưu; done → ghi hàng)\nlet state = flow.get(\"xlsx_state\") || {};\nstate[room] = state[room] || { reqTs: \"\", apprTs: \"\", doneTs: \"\" };\n\nif (status === \"waiting\") {\n    state[room].reqTs = now;\n    flow.set(\"xlsx_state\", state);\n    return null;\n}\n\nif (status === \"approved\") {\n    state[room].apprTs = now;\n    flow.set(\"xlsx_state\", state);\n    return null;\n}\n\nif (status !== \"done\") {\n    return null;\n}\n\n// == done ==\nstate[room].doneTs = now;\n\n// === Lưu hàng vào bộ đệm từng phòng ===\n// rowsMap: { room1: [...], room2: [...], ... }\nlet rowsMap = flow.get(\"xlsx_rows_map\") || {};\nROOM_IDS.forEach(r => { rowsMap[r] = rowsMap[r] || []; });\n\n// Tạo 1 dòng cho phòng hiện tại\nconst newRow = {\n    req: state[room].reqTs || \"\",\n    room: room,\n    appr: state[room].apprTs || \"\",\n    done: state[room].doneTs || \"\"\n};\n\n// Chuyển newRow -> cells\nfunction rowToCells(r) {\n    return {\n        row_styling: {\n            pattern_type: \"solid\",\n            fgColor: \"ffffffff\",\n            bgColor: \"ffffffff\",\n            hAlign: \"center\",\n            vAlign: \"center\"\n        },\n        cells: [\n            { cell_value: r.req },\n            { cell_value: r.room },\n            { cell_value: r.appr },\n            { cell_value: r.done }\n        ]\n    };\n}\n\nrowsMap[room].push(rowToCells(newRow));\n\n// Reset state phòng để sẵn sàng vòng mới\nstate[room] = { reqTs: \"\", apprTs: \"\", doneTs: \"\" };\nflow.set(\"xlsx_state\", state);\nflow.set(\"xlsx_rows_map\", rowsMap);\n\n// === Build toàn workbook (4 sheet) từ rowsMap ===\nlet workbookSheets = [];\nROOM_IDS.forEach(r => {\n    const dataRows = rowsMap[r]; // mảng các dòng cells của phòng r\n    // Luôn tạo sheet kể cả trống (tuỳ bạn: nếu muốn chỉ tạo khi có dữ liệu thì if (dataRows.length) mới push)\n    workbookSheets.push(sheetWrapper(r, dataRows));\n});\n\n// Xuất cho buffer-xlsx writeFile\nmsg.payload = workbookSheets;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1860,
+        "y": 760,
+        "wires": [
+            [
+                "dc845ef7c8b70b0a"
+            ]
+        ]
+    },
+    {
+        "id": "dc845ef7c8b70b0a",
+        "type": "buffer-xlsx",
+        "z": "b6da54ec33e2338b",
+        "name": "",
+        "stylemerge": false,
+        "x": 2030,
+        "y": 760,
+        "wires": [
+            [
+                "5bb37b0922c5d740"
+            ]
+        ]
+    },
+    {
+        "id": "5bb37b0922c5d740",
+        "type": "file",
+        "z": "b6da54ec33e2338b",
+        "name": "",
+        "filename": "D:\\ADMIN\\Documents\\UTE\\HK5\\IoT\\project\\coap_room_log.xlsx",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "setbymsg",
+        "x": 2370,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "48d614b4d301c547",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Xử lý 2",
+        "func": "// Cập nhật giao diện + CSV + bật/tắt nút DUYỆT\nconst data = msg.payload;\nconst room = data.id || 'room2';\n\nlet state = '';\nlet enableBtn = false;\nlet text, color, app = false;\n\nlet allow = flow.get('allow_get') || {};\nlet roomStates = flow.get('room_state') || {};\n\n\nif (data.status === 'waiting') {\n    text = 'Có yêu cầu từ phòng bệnh số 1';\n    state = 'waiting';\n    app = true;\n    color = 2;\n} else if (data.status === 'approved') {\n    text = 'Đang xử lý...';\n    state = 'approved';\n    app = true;\n    color = 1;\n} else if (data.status === 'done') {\n    text = 'Xử lý xong';\n    state = 'done';\n    app = true;\n    color = 0;\n}else{\n    app = false;\n}\n\nallow[room] = app;\nroomStates[room] = state;\nflow.set('allow_get', allow);\nenableBtn = (state === 'waiting');\nflow.set('room_state', roomStates);\n\n\nreturn [{ payload: color }, { lbl: text }, { enable: enableBtn }, { payload: data }];",
+        "outputs": 4,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 580,
+        "wires": [
+            [
+                "6acc3be756f05114"
+            ],
+            [
+                "d4579b5c95f1a51b"
+            ],
+            [
+                "284cd388e56946e6"
+            ],
+            [
+                "6d79271fda761d02"
+            ]
+        ]
+    },
+    {
+        "id": "6acc3be756f05114",
+        "type": "ui_led",
+        "z": "b6da54ec33e2338b",
+        "order": 1,
+        "group": "c1ae6b5e9f3a1599",
+        "width": 2,
+        "height": 1,
+        "label": "",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ffffff",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#ffff00",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#ff0000",
+                "value": "2",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "LED 2",
+        "x": 1250,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "d4579b5c95f1a51b",
+        "type": "ui_text",
+        "z": "b6da54ec33e2338b",
+        "group": "c1ae6b5e9f3a1599",
+        "order": 2,
+        "width": 8,
+        "height": 1,
+        "name": "Hiển thị",
+        "label": "",
+        "format": "{{msg.lbl}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1260,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "284cd388e56946e6",
+        "type": "ui_template",
+        "z": "b6da54ec33e2338b",
+        "group": "c1ae6b5e9f3a1599",
+        "name": "Nút \"Duyệt\"",
+        "order": 3,
+        "width": 10,
+        "height": 1,
+        "format": "<div style=\"text-align:center\">\n  <md-button class=\"md-raised md-primary\" ng-disabled=\"!enabled\" ng-click=\"send({payload:'approve'})\">\n    CHẤP NHẬN\n  </md-button>\n</div>\n<script>\n(function(scope){\n  scope.enabled = false;\n  scope.$watch('msg', function(msg){\n    if(!msg) return;\n    if(msg.enable === true){ scope.enabled = true; }\n    if(msg.enable === false){ scope.enabled = false; }\n  });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1270,
+        "y": 600,
+        "wires": [
+            [
+                "f7ae640ea601b38d"
+            ]
+        ]
+    },
+    {
+        "id": "f7ae640ea601b38d",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Chặn nếu chưa waiting",
+        "func": "// Chỉ cho DUYỆT khi phòng đang ở trạng thái waiting\nconst room = 'room2';\nconst rs = flow.get('room_state') || {};\n\nconst ok = (rs[room] === 'waiting');\n\n\nif (ok) {\n  msg.payload = { id: room, status: 'approved' };\n  return [msg, null];\n} else {\n  return [null, { payload: 'Chưa có yêu cầu hoặc đã duyệt!', position: 'top right', timeout: 3 }];\n}\n",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1310,
+        "y": 680,
+        "wires": [
+            [
+                "89bae06c8987c8f6",
+                "48d614b4d301c547"
+            ],
+            [
+                "c1489cfe2683e47b"
+            ]
+        ]
+    },
+    {
+        "id": "89bae06c8987c8f6",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Tắt nút sau khi \"Duyệt\"",
+        "func": "return { enable: false };",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1610,
+        "y": 660,
+        "wires": [
+            [
+                "284cd388e56946e6"
+            ]
+        ]
+    },
+    {
+        "id": "c1489cfe2683e47b",
+        "type": "debug",
+        "z": "b6da54ec33e2338b",
+        "name": "Báo lỗi",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1550,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "d1e34753bf69fbf3",
+        "type": "coap response",
+        "z": "b6da54ec33e2338b",
+        "name": "CoAP RES",
+        "statusCode": "",
+        "contentFormat": "application/json",
+        "x": 1270,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "3d5b4ddfad3cab76",
+        "type": "coap in",
+        "z": "b6da54ec33e2338b",
+        "method": "POST",
+        "name": "CoAP POST /room2",
+        "server": "3ad03d20df8dc74e",
+        "url": "/room2",
+        "x": 130,
+        "y": 580,
+        "wires": [
+            [
+                "877378f582aafdc3"
+            ]
+        ]
+    },
+    {
+        "id": "877378f582aafdc3",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Chuẩn hoá payload → string",
+        "func": "let p = msg.payload;\nif (Buffer.isBuffer(p)) p = p.toString();\nif (typeof p !== 'string') p = (p==null? '' : JSON.stringify(p));\np = p.trim();\nmsg.payload = p;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 580,
+        "wires": [
+            [
+                "549cce03da6acb88"
+            ]
+        ]
+    },
+    {
+        "id": "549cce03da6acb88",
+        "type": "switch",
+        "z": "b6da54ec33e2338b",
+        "name": "Có dữ liệu?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 580,
+        "wires": [
+            [
+                "4eae7c9f1c86a9a7"
+            ]
+        ]
+    },
+    {
+        "id": "4eae7c9f1c86a9a7",
+        "type": "json",
+        "z": "b6da54ec33e2338b",
+        "name": "JSON parse",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 580,
+        "wires": [
+            [
+                "c481d337d0ce09a3",
+                "48d614b4d301c547"
+            ]
+        ]
+    },
+    {
+        "id": "c481d337d0ce09a3",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Response",
+        "func": "const now = new Date(Date.now() + 7 * 3600 * 1000).toISOString().replace('T', ' ').slice(0, 19);\nmsg.payload = { ack: true, time: now };\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 520,
+        "wires": [
+            [
+                "d1e34753bf69fbf3"
+            ]
+        ]
+    },
+    {
+        "id": "28c8e3a880dec126",
+        "type": "coap in",
+        "z": "b6da54ec33e2338b",
+        "method": "GET",
+        "name": "CoAP GET /room2/status",
+        "server": "3ad03d20df8dc74e",
+        "url": "/room2/status",
+        "x": 150,
+        "y": 540,
+        "wires": [
+            [
+                "66cde074c259171d"
+            ]
+        ]
+    },
+    {
+        "id": "66cde074c259171d",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Gate: chỉ cho GET sau khi Duyệt",
+        "func": "const room = 'room2';\nconst rs = flow.get('room_state') || {};\nconst allow = flow.get('allow_get') || {};\n\nlet state = rs[room] || 'other';\n\nif (!allow[room]) {\n    msg.payload = { ack: false, error: 'GET not allowed for room2' };\n    return msg;\n} else {\n    if (state === 'waiting') {\n        msg.payload = { id: room, status: 'waiting' };\n    } else if (state === 'approved') {\n        msg.payload = { id: room, status: 'approved' };\n    } else if (state === 'done') {\n        msg.payload = { id: room, status: 'done' };\n    } else {\n        msg.payload = { ack: false, error: 'GET not allowed for room2' };\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 480,
+        "wires": [
+            [
+                "d1e34753bf69fbf3"
+            ]
+        ]
+    },
+    {
+        "id": "56a15de744f96691",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Xử lý 3",
+        "func": "// Cập nhật giao diện + CSV + bật/tắt nút DUYỆT\nconst data = msg.payload;\nconst room = data.id || 'room3';\n\nlet state = '';\nlet enableBtn = false;\nlet text, color, app = false;\n\nlet allow = flow.get('allow_get') || {};\nlet roomStates = flow.get('room_state') || {};\n\n\nif (data.status === 'waiting') {\n    text = 'Có yêu cầu từ phòng bệnh số 1';\n    state = 'waiting';\n    app = true;\n    color = 2;\n} else if (data.status === 'approved') {\n    text = 'Đang xử lý...';\n    state = 'approved';\n    app = true;\n    color = 1;\n} else if (data.status === 'done') {\n    text = 'Xử lý xong';\n    state = 'done';\n    app = true;\n    color = 0;\n}else{\n    app = false;\n}\n\nallow[room] = app;\nroomStates[room] = state;\nflow.set('allow_get', allow);\nenableBtn = (state === 'waiting');\nflow.set('room_state', roomStates);\n\n\nreturn [{ payload: color }, { lbl: text }, { enable: enableBtn }, { payload: data }];",
+        "outputs": 4,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 880,
+        "wires": [
+            [
+                "4b9ce2e5ac325eed"
+            ],
+            [
+                "44ca127977b3dc26"
+            ],
+            [
+                "3c8e655f8e661817"
+            ],
+            [
+                "6d79271fda761d02"
+            ]
+        ]
+    },
+    {
+        "id": "4b9ce2e5ac325eed",
+        "type": "ui_led",
+        "z": "b6da54ec33e2338b",
+        "order": 1,
+        "group": "f719ee4f0534ee66",
+        "width": 2,
+        "height": 1,
+        "label": "",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ffffff",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#ffff00",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#ff0000",
+                "value": "2",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "LED 3",
+        "x": 1250,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "44ca127977b3dc26",
+        "type": "ui_text",
+        "z": "b6da54ec33e2338b",
+        "group": "f719ee4f0534ee66",
+        "order": 2,
+        "width": 8,
+        "height": 1,
+        "name": "Hiển thị",
+        "label": "",
+        "format": "{{msg.lbl}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1260,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "3c8e655f8e661817",
+        "type": "ui_template",
+        "z": "b6da54ec33e2338b",
+        "group": "f719ee4f0534ee66",
+        "name": "Nút \"Duyệt\"",
+        "order": 3,
+        "width": 10,
+        "height": 1,
+        "format": "<div style=\"text-align:center\">\n  <md-button class=\"md-raised md-primary\" ng-disabled=\"!enabled\" ng-click=\"send({payload:'approve'})\">\n    CHẤP NHẬN\n  </md-button>\n</div>\n<script>\n(function(scope){\n  scope.enabled = false;\n  scope.$watch('msg', function(msg){\n    if(!msg) return;\n    if(msg.enable === true){ scope.enabled = true; }\n    if(msg.enable === false){ scope.enabled = false; }\n  });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1270,
+        "y": 900,
+        "wires": [
+            [
+                "2e27fc078f0b3c4d"
+            ]
+        ]
+    },
+    {
+        "id": "2e27fc078f0b3c4d",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Chặn nếu chưa waiting",
+        "func": "// Chỉ cho DUYỆT khi phòng đang ở trạng thái waiting\nconst room = 'room3';\nconst rs = flow.get('room_state') || {};\n\nconst ok = (rs[room] === 'waiting');\n\n\nif (ok) {\n  msg.payload = { id: room, status: 'approved' };\n  return [msg, null];\n} else {\n  return [null, { payload: 'Chưa có yêu cầu hoặc đã duyệt!', position: 'top right', timeout: 3 }];\n}\n",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1310,
+        "y": 980,
+        "wires": [
+            [
+                "1d651a9f549be3c5",
+                "56a15de744f96691"
+            ],
+            [
+                "56468bcc158e340a"
+            ]
+        ]
+    },
+    {
+        "id": "1d651a9f549be3c5",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Tắt nút sau khi \"Duyệt\"",
+        "func": "return { enable: false };",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1610,
+        "y": 960,
+        "wires": [
+            [
+                "3c8e655f8e661817"
+            ]
+        ]
+    },
+    {
+        "id": "56468bcc158e340a",
+        "type": "debug",
+        "z": "b6da54ec33e2338b",
+        "name": "Báo lỗi",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1550,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "a54e75ce90f6a9e8",
+        "type": "coap response",
+        "z": "b6da54ec33e2338b",
+        "name": "CoAP RES",
+        "statusCode": "",
+        "contentFormat": "application/json",
+        "x": 1270,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "a395bd434e6b4e20",
+        "type": "coap in",
+        "z": "b6da54ec33e2338b",
+        "method": "POST",
+        "name": "CoAP POST /room3",
+        "server": "3ad03d20df8dc74e",
+        "url": "/room3",
+        "x": 130,
+        "y": 880,
+        "wires": [
+            [
+                "049486a8cb4bcfc8"
+            ]
+        ]
+    },
+    {
+        "id": "049486a8cb4bcfc8",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Chuẩn hoá payload → string",
+        "func": "let p = msg.payload;\nif (Buffer.isBuffer(p)) p = p.toString();\nif (typeof p !== 'string') p = (p==null? '' : JSON.stringify(p));\np = p.trim();\nmsg.payload = p;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 880,
+        "wires": [
+            [
+                "0297ebb6e9f345fd"
+            ]
+        ]
+    },
+    {
+        "id": "0297ebb6e9f345fd",
+        "type": "switch",
+        "z": "b6da54ec33e2338b",
+        "name": "Có dữ liệu?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 880,
+        "wires": [
+            [
+                "146fc70eabc3e8c3"
+            ]
+        ]
+    },
+    {
+        "id": "146fc70eabc3e8c3",
+        "type": "json",
+        "z": "b6da54ec33e2338b",
+        "name": "JSON parse",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 880,
+        "wires": [
+            [
+                "4e2b60673eba3856",
+                "56a15de744f96691"
+            ]
+        ]
+    },
+    {
+        "id": "4e2b60673eba3856",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Response",
+        "func": "const now = new Date(Date.now() + 7 * 3600 * 1000).toISOString().replace('T', ' ').slice(0, 19);\nmsg.payload = { ack: true, time: now };\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 820,
+        "wires": [
+            [
+                "a54e75ce90f6a9e8"
+            ]
+        ]
+    },
+    {
+        "id": "9ccc860bcb04e60a",
+        "type": "coap in",
+        "z": "b6da54ec33e2338b",
+        "method": "GET",
+        "name": "CoAP GET /room3/status",
+        "server": "3ad03d20df8dc74e",
+        "url": "/room3/status",
+        "x": 150,
+        "y": 840,
+        "wires": [
+            [
+                "16f2cd4da1fe3a0b"
+            ]
+        ]
+    },
+    {
+        "id": "16f2cd4da1fe3a0b",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Gate: chỉ cho GET sau khi Duyệt",
+        "func": "const room = 'room3';\nconst rs = flow.get('room_state') || {};\nconst allow = flow.get('allow_get') || {};\n\nlet state = rs[room] || 'other';\n\nif (!allow[room]) {\n    msg.payload = { ack:false, error:'GET not allowed for room3'};\n    return msg;\n} else {\n    if (state === 'waiting') {\n        msg.payload = { id: room, status: 'waiting' };\n    } else if (state === 'approved') {\n        msg.payload = { id: room, status: 'approved' };\n    } else if (state === 'done') {\n        msg.payload = { id: room, status: 'done' };\n    }else{\n        msg.payload = { ack: false, error: 'GET not allowed for room3' };\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 780,
+        "wires": [
+            [
+                "a54e75ce90f6a9e8"
+            ]
+        ]
+    },
+    {
+        "id": "080e6e5cf27040f3",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Xử lý 4",
+        "func": "// Cập nhật giao diện + CSV + bật/tắt nút DUYỆT\nconst data = msg.payload;\nconst room = data.id || 'room4';\n\nlet state = '';\nlet enableBtn = false;\nlet text, color, app = false;\n\nlet allow = flow.get('allow_get') || {};\nlet roomStates = flow.get('room_state') || {};\n\n\nif (data.status === 'waiting') {\n    text = 'Có yêu cầu từ phòng bệnh số 1';\n    state = 'waiting';\n    app = true;\n    color = 2;\n} else if (data.status === 'approved') {\n    text = 'Đang xử lý...';\n    state = 'approved';\n    app = true;\n    color = 1;\n} else if (data.status === 'done') {\n    text = 'Xử lý xong';\n    state = 'done';\n    app = true;\n    color = 0;\n} else {\n    app = false;\n}\n\nallow[room] = app;\nroomStates[room] = state;\nflow.set('allow_get', allow);\nenableBtn = (state === 'waiting');\nflow.set('room_state', roomStates);\n\n\nreturn [{ payload: color }, { lbl: text }, { enable: enableBtn }, { payload: data }];",
+        "outputs": 4,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 1160,
+        "wires": [
+            [
+                "1419cdd4e0098aaf"
+            ],
+            [
+                "5a029c5abe92d817"
+            ],
+            [
+                "109854ed4e9e230a"
+            ],
+            [
+                "6d79271fda761d02"
+            ]
+        ]
+    },
+    {
+        "id": "1419cdd4e0098aaf",
+        "type": "ui_led",
+        "z": "b6da54ec33e2338b",
+        "order": 1,
+        "group": "776f2240a27b0c8d",
+        "width": 2,
+        "height": 1,
+        "label": "",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ffffff",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#ffff00",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#ff0000",
+                "value": "2",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "LED 4",
+        "x": 1250,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "5a029c5abe92d817",
+        "type": "ui_text",
+        "z": "b6da54ec33e2338b",
+        "group": "776f2240a27b0c8d",
+        "order": 2,
+        "width": 8,
+        "height": 1,
+        "name": "Hiển thị",
+        "label": "",
+        "format": "{{msg.lbl}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1260,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "109854ed4e9e230a",
+        "type": "ui_template",
+        "z": "b6da54ec33e2338b",
+        "group": "776f2240a27b0c8d",
+        "name": "Nút \"Duyệt\"",
+        "order": 4,
+        "width": 10,
+        "height": 1,
+        "format": "<div style=\"text-align:center\">\n  <md-button class=\"md-raised md-primary\" ng-disabled=\"!enabled\" ng-click=\"send({payload:'approve'})\">\n    CHẤP NHẬN\n  </md-button>\n</div>\n<script>\n(function(scope){\n  scope.enabled = false;\n  scope.$watch('msg', function(msg){\n    if(!msg) return;\n    if(msg.enable === true){ scope.enabled = true; }\n    if(msg.enable === false){ scope.enabled = false; }\n  });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1270,
+        "y": 1180,
+        "wires": [
+            [
+                "398a358f0fc41b20"
+            ]
+        ]
+    },
+    {
+        "id": "398a358f0fc41b20",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Chặn nếu chưa waiting",
+        "func": "// Chỉ cho DUYỆT khi phòng đang ở trạng thái waiting\nconst room = 'room4';\nconst rs = flow.get('room_state') || {};\n\nconst ok = (rs[room] === 'waiting');\n\n\nif (ok) {\n  msg.payload = { id: room, status: 'approved' };\n  return [msg, null];\n} else {\n  return [null, { payload: 'Chưa có yêu cầu hoặc đã duyệt!', position: 'top right', timeout: 3 }];\n}\n",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1310,
+        "y": 1260,
+        "wires": [
+            [
+                "835d3eb5ec343a11",
+                "080e6e5cf27040f3"
+            ],
+            [
+                "c1ed6b7be16c1e09"
+            ]
+        ]
+    },
+    {
+        "id": "835d3eb5ec343a11",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Tắt nút sau khi \"Duyệt\"",
+        "func": "return { enable: false };",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1610,
+        "y": 1240,
+        "wires": [
+            [
+                "109854ed4e9e230a"
+            ]
+        ]
+    },
+    {
+        "id": "c1ed6b7be16c1e09",
+        "type": "debug",
+        "z": "b6da54ec33e2338b",
+        "name": "Báo lỗi",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1550,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "4f6956adab5c7d9f",
+        "type": "coap response",
+        "z": "b6da54ec33e2338b",
+        "name": "CoAP RES",
+        "statusCode": "",
+        "contentFormat": "application/json",
+        "x": 1270,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "1deeea4e9ec4f25d",
+        "type": "coap in",
+        "z": "b6da54ec33e2338b",
+        "method": "POST",
+        "name": "CoAP POST /room4",
+        "server": "3ad03d20df8dc74e",
+        "url": "/room4",
+        "x": 130,
+        "y": 1160,
+        "wires": [
+            [
+                "2be251eab5d38ed3"
+            ]
+        ]
+    },
+    {
+        "id": "2be251eab5d38ed3",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Chuẩn hoá payload → string",
+        "func": "let p = msg.payload;\nif (Buffer.isBuffer(p)) p = p.toString();\nif (typeof p !== 'string') p = (p==null? '' : JSON.stringify(p));\np = p.trim();\nmsg.payload = p;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 1160,
+        "wires": [
+            [
+                "694e2d155eae3fd5"
+            ]
+        ]
+    },
+    {
+        "id": "694e2d155eae3fd5",
+        "type": "switch",
+        "z": "b6da54ec33e2338b",
+        "name": "Có dữ liệu?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 1160,
+        "wires": [
+            [
+                "e6a60a7939b174a7"
+            ]
+        ]
+    },
+    {
+        "id": "e6a60a7939b174a7",
+        "type": "json",
+        "z": "b6da54ec33e2338b",
+        "name": "JSON parse",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 1160,
+        "wires": [
+            [
+                "0aa2f572dbc2cfe1",
+                "080e6e5cf27040f3"
+            ]
+        ]
+    },
+    {
+        "id": "0aa2f572dbc2cfe1",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Response",
+        "func": "const now = new Date(Date.now() + 7 * 3600 * 1000).toISOString().replace('T', ' ').slice(0, 19);\nmsg.payload = { ack: true, time: now };\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 1100,
+        "wires": [
+            [
+                "4f6956adab5c7d9f"
+            ]
+        ]
+    },
+    {
+        "id": "c22655052228ede4",
+        "type": "coap in",
+        "z": "b6da54ec33e2338b",
+        "method": "GET",
+        "name": "CoAP GET /room4/status",
+        "server": "3ad03d20df8dc74e",
+        "url": "/room4/status",
+        "x": 150,
+        "y": 1120,
+        "wires": [
+            [
+                "ef451bac7b07f3a6"
+            ]
+        ]
+    },
+    {
+        "id": "ef451bac7b07f3a6",
+        "type": "function",
+        "z": "b6da54ec33e2338b",
+        "name": "Gate: chỉ cho GET sau khi Duyệt",
+        "func": "const room = 'room4';\nconst rs = flow.get('room_state') || {};\nconst allow = flow.get('allow_get') || {};\n\nlet state = rs[room] || 'other';\n\nif (!allow[room]) {\n    msg.payload = { ack: false, error: 'GET not allowed for room4' };\n    return msg;\n} else {\n    if (state === 'waiting') {\n        msg.payload = { id: room, status: 'waiting' };\n    } else if (state === 'approved') {\n        msg.payload = { id: room, status: 'approved' };\n    } else if (state === 'done') {\n        msg.payload = { id: room, status: 'done' };\n    } else {\n        msg.payload = { ack: false, error: 'GET not allowed for room4' };\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 1060,
+        "wires": [
+            [
+                "4f6956adab5c7d9f"
+            ]
+        ]
+    },
+    {
+        "id": "8fb34d5dd0ee8a94",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6",
+            "node-red-contrib-coap": "0.8.0",
+            "node-red-contrib-ui-led": "0.4.11",
+            "@juraj336/node-red-buffer-xlsx": "1.0.1"
+        }
+    }
+]
